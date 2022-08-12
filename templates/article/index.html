@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.css"/>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.js"></script>
+    <title>Code Test Example</title>
+</head>
+<body>
+<div>
+    Python: {{python_version}}<br>
+    Django: {{django_version}}
+</div>
+<div class="container" style="padding:50px 250px;">
+    <h1>Articles</h1>
+    <h3><input type="button" id="loadDataButton" onclick="loadData()"
+               value="Get Data"/></h3>
+    <div id="header"></div>
+    <table id="records" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Rank</th>
+            <th>Url</th>
+        </tr>
+        </thead>
+    </table>
+    <div id="footer"></div>
+</div>
+<script type="text/javascript">
+    function loadData(btn){
+        // allow to load data only once, since it requires more coding to enable empty and reinitialize datatable.
+        document.getElementById("loadDataButton").hidden = true;
+
+        var arrayReturn = [];
+        $.ajax({
+            url: "article?format=json",
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                for (var i = 0, len = data.length; i < len; i++) {
+                    url = '<a href="' + data[i].url + '">' + data[i].url + '</a>'
+                    arrayReturn.push(
+                    [ data[i].id, data[i].name, data[i].description, data[i].rank, url]
+                    );
+                }
+                initTable(arrayReturn);
+            }
+        });
+    };
+    function initTable(data) {
+        $('#records').DataTable( {
+            "aaData": data
+        } );
+    };
+
+</script>
+</body>
+</html>
